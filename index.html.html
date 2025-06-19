@@ -1,0 +1,13 @@
+import { useState, useEffect } from 'react'; import { Card, CardContent } from '@/components/ui/card'; import { Button } from '@/components/ui/button';
+
+export default function FocusTimer() { const [startTime, setStartTime] = useState(null); const [elapsedTime, setElapsedTime] = useState(0); const [sessions, setSessions] = useState([]); const [isRunning, setIsRunning] = useState(false);
+
+useEffect(() => { let interval; if (isRunning) { interval = setInterval(() => { setElapsedTime(Date.now() - startTime); }, 1000); } else { clearInterval(interval); } return () => clearInterval(interval); }, [isRunning, startTime]);
+
+const startTimer = () => { setStartTime(Date.now()); setElapsedTime(0); setIsRunning(true); };
+
+const stopTimer = () => { if (startTime) { const session = { start: new Date(startTime).toLocaleString(), end: new Date().toLocaleString(), duration: Math.round(elapsedTime / 1000), }; setSessions([...sessions, session]); } setIsRunning(false); setStartTime(null); setElapsedTime(0); };
+
+const formatDuration = (seconds) => { const mins = Math.floor(seconds / 60); const secs = seconds % 60; return ${mins}分${secs}秒; };
+
+return ( <div className="p-6 space-y-4"> <Card> <CardContent className="flex flex-col items-center justify-center space-y-4"> <p className="text-xl">当前计时：{formatDuration(Math.round(elapsedTime / 1000))}</p > <div className="space-x-4"> <Button onClick={startTimer} disabled={isRunning}> 开始 </Button> <Button onClick={stopTimer} disabled={!isRunning}> 结束 </Button> </div> </CardContent> </Card> <div className="space-y-2"> <h2 className="text-lg font-semibold">我的专注记录</h2> {sessions.map((s, i) => ( <Card key={i} className="p-2"> <CardContent> <p>开始：{s.start}</p > <p>结束：{s.end}</p > <p>时长：{formatDuration(s.duration)}</p > </CardContent> </Card> ))} </div> </div> ); }
