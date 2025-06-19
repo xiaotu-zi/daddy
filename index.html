@@ -1,0 +1,81 @@
+<!DOCTYPE html><html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>打卡专注时间记录器</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background-color: #f0f0f0;
+    }
+    h1 {
+      color: #333;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .timer {
+      font-size: 32px;
+      margin: 20px 0;
+      color: #222;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      margin: 8px 0;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <h1>乖宝宝的专注时间记录器 ⏳</h1>
+  <div class="timer" id="timer">00:00:00</div>
+  <button onclick="startTimer()">开始</button>
+  <button onclick="stopTimer()">结束</button>
+  <button onclick="saveRecord()">保存记录</button>
+  <h2>打卡历史记录 📒</h2>
+  <ul id="recordList"></ul>  <script>
+    let startTime, interval;
+
+    function startTimer() {
+      startTime = new Date();
+      interval = setInterval(updateTimer, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(interval);
+    }
+
+    function updateTimer() {
+      const now = new Date();
+      const elapsed = new Date(now - startTime);
+      const hours = String(elapsed.getUTCHours()).padStart(2, '0');
+      const minutes = String(elapsed.getUTCMinutes()).padStart(2, '0');
+      const seconds = String(elapsed.getUTCSeconds()).padStart(2, '0');
+      document.getElementById('timer').textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    function saveRecord() {
+      const time = document.getElementById('timer').textContent;
+      if (time === "00:00:00") return alert("宝宝你还没开始计时哦~");
+      const now = new Date().toLocaleString();
+      const li = document.createElement('li');
+      li.textContent = `🕒 ${now} 专注时长：${time}`;
+      document.getElementById('recordList').appendChild(li);
+      document.getElementById('timer').textContent = "00:00:00";
+    }
+  </script></body>
+</html>
